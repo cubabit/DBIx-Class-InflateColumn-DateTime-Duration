@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/DBIx-Class-InflateColumn-DateTime-Duration.t
+lib/DBIx/Class/InflateColumn/DateTime/Duration.pm
