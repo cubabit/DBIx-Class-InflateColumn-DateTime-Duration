@@ -1,76 +1,93 @@
 package DBIx::Class::InflateColumn::DateTime::Duration;
 
-use 5.010001;
-use strict;
-use warnings;
-
-require Exporter;
-
-our @ISA = qw(Exporter);
-
-# Items to export into callers namespace by default. Note: do not export
-# names by default without a very good reason. Use EXPORT_OK instead.
-# Do not simply export all your public functions/methods/constants.
-
-# This allows declaration	use DBIx::Class::InflateColumn::DateTime::Duration ':all';
-# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
-# will save memory.
-our %EXPORT_TAGS = ( 'all' => [ qw(
-	
-) ] );
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw(
-	
-);
-
-our $VERSION = '0.01';
-
-
-# Preloaded methods go here.
-
-1;
-__END__
-# Below is stub documentation for your module. You'd better edit it!
-
 =head1 NAME
 
-DBIx::Class::InflateColumn::DateTime::Duration - Perl extension for blah blah blah
+DBIx::Class::InflateColumn::DateTime::Duration - Auto create 
+DateTime::Duration objects from columns
 
 =head1 SYNOPSIS
 
   use DBIx::Class::InflateColumn::DateTime::Duration;
-  blah blah blah
 
 =head1 DESCRIPTION
 
-Stub documentation for DBIx::Class::InflateColumn::DateTime::Duration, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+Load this component and then declare one or more columns as URI columns.
 
-Blah blah blah.
+  package Holiday;
+  __PACKAGE__->load_components(qw/InflateColumn::DateTime::Duration Core/);
+  __PACKAGE__->add_columns(
+      length => {
+          datatype      => 'varchar',
+          size          => 255,
+          is_nullable   => 1,
+          is_duration   => 1,
+      },
+  );
 
-=head2 EXPORT
+Then you can treat the specified column as a L<DateTime::Duration> object.
 
-None by default.
+print 'days: ', $holiday->length->delta_days, "\n";
+print 'hours: ', $holiday->length->delta_hours, "\n";
 
+=cut
 
+use strict;
+use warnings;
+
+our $VERSION = '0.00001';
+
+use base qw(DBIx::Class);
+
+use Try::Tiny;
+use DateTime::Format::Duration::XSD;
+
+sub register_column {
+    my ($self, $column, $info, @rest) = @_;
+    $self->next::method($column, $info, @rest);
+
+    return unless defined $info->{is_duration};
+
+    $self->inflate_column(
+        $column => {
+            inflate => sub {
+                my ($value, $obj) = @_;
+                my $duration;
+
+                if ($value) {
+                    my $parser = DateTime::Format::Duration::XSD->new;
+
+                    try {
+                        $duration = $parser->parse_duration($value);
+                    }
+                    catch {
+                        $self->throw_exception('Could not parse duration from ' . $value);
+                    }
+                }
+
+                return $duration;
+            },
+            deflate => sub {
+                my ($value, $obj) = @_;
+
+                return unless (ref $value eq 'DateTime::Duration');
+
+                my $parser = DateTime::Format::Duration::XSD->new;
+
+                return $parser->format_duration($value);
+            },
+        }
+    );
+}
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+L<DateTime::Duration>,
+L<DBIx::Class::InflateColumn>,
+L<DBIx::Class>.
 
 =head1 AUTHOR
 
-Pete Smith, E<lt>pete@E<gt>
+Pete Smith, E<lt>pete@cubabit.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -80,5 +97,7 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.1 or,
 at your option, any later version of Perl 5 you may have available.
 
-
 =cut
+
+1;
+
