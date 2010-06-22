@@ -7,11 +7,7 @@ DateTime::Duration objects from columns
 
 =head1 SYNOPSIS
 
-  use DBIx::Class::InflateColumn::DateTime::Duration;
-
-=head1 DESCRIPTION
-
-Load this component and then declare one or more columns as URI columns.
+Load this component and then declare one or more columns as duration columns.
 
   package Holiday;
   __PACKAGE__->load_components(qw/InflateColumn::DateTime::Duration Core/);
@@ -26,20 +22,33 @@ Load this component and then declare one or more columns as URI columns.
 
 Then you can treat the specified column as a L<DateTime::Duration> object.
 
-print 'days: ', $holiday->length->delta_days, "\n";
-print 'hours: ', $holiday->length->delta_hours, "\n";
+  print 'days: ', $holiday->length->delta_days, "\n";
+  print 'hours: ', $holiday->length->delta_hours, "\n";
+
+=head1 DESCRIPTION
+
+This module inflates/deflates designated columns into L<DateTime::Duration> objects.
 
 =cut
 
 use strict;
 use warnings;
 
-our $VERSION = '0.00001';
+our $VERSION = '0.01';
 
 use base qw(DBIx::Class);
 
 use Try::Tiny;
 use DateTime::Format::Duration::XSD;
+
+=head1 METHODS
+
+=head2 register_column
+
+Chains with the "register_column" in L<DBIx::Class::Row> method, and sets up duration 
+columns appropriately. This would not normally be directly called by end users.
+
+=cut
 
 sub register_column {
     my ($self, $column, $info, @rest) = @_;
