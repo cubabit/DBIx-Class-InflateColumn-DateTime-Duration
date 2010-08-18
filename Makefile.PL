@@ -18,7 +18,7 @@ tests 't/*.t';
 clean_files "DBIx-Class-InflateColumn-DateTime-Duration-* t/var";
 
 eval {
-        system 'pod2text lib/DBIx/Class/InflateColumn/DateTime.pm > README';
+        system 'pod2text lib/DBIx/Class/InflateColumn/DateTime/Duration.pm > README';
     };
 
     auto_install;
