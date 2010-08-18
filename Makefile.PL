@@ -9,7 +9,7 @@ all_from 'lib/DBIx/Class/InflateColumn/DateTime/Duration.pm';
 
 requires 'DBIx::Class'                      => '0.07005'; 
 requires 'DateTime::Format::Duration::XSD'  => '0.01';
-requires 'Try::Tiny'                        => '0.06';
+requires 'Try::Tiny'                        => '0.04';
 
 build_requires 'DBD::SQLite'              => '1.11';
 build_requires 'Class::Accessor::Grouped' => '0.03';
