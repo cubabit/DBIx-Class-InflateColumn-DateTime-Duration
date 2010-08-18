@@ -1,12 +1,27 @@
-use 5.010001;
-use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
-WriteMakefile(
-    NAME              => 'DBIx::Class::InflateColumn::DateTime::Duration',
-    VERSION_FROM      => 'lib/DBIx/Class/InflateColumn/DateTime/Duration.pm', # finds $VERSION
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
-    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'lib/DBIx/Class/InflateColumn/DateTime/Duration.pm', # retrieve abstract from module
-       AUTHOR         => 'Pete Smith <pete@>') : ()),
-);
+use strict;
+use warnings;
+use inc::Module::Install 0.65;
+
+name 'DBIx-Class-InflateColumn-DateTime-Duration';
+license 'perl';
+perl_version '5.008001';
+all_from 'lib/DBIx/Class/InflateColumn/DateTime/Duration.pm';
+
+requires 'DBIx::Class'                      => '0.07005'; 
+requires 'DateTime::Format::Duration::XSD'  => '0.01';
+requires 'Try::Tiny'                        => '0.06';
+
+build_requires 'DBD::SQLite'              => '1.11';
+build_requires 'Class::Accessor::Grouped' => '0.03';
+
+tests 't/*.t';
+clean_files "DBIx-Class-InflateColumn-DateTime-Duration-* t/var";
+
+eval {
+        system 'pod2text lib/DBIx/Class/InflateColumn/DateTime.pm > README';
+    };
+
+    auto_install;
+
+    WriteMakefile;
+

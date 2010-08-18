@@ -34,7 +34,7 @@ print 'hours: ', $holiday->length->delta_hours, "\n";
 use strict;
 use warnings;
 
-our $VERSION = '0.10000';
+our $VERSION = '0.01000';
 
 use base qw(DBIx::Class);
 

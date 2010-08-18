@@ -26,7 +26,6 @@ DEPENDENCIES
 This module requires these other modules and libraries:
 
 DBIx::Class
-DateTime::Duration
 DateTime::Format::Duration::XSD
 Try::Tiny
 
