@@ -34,7 +34,7 @@ This module inflates/deflates designated columns into L<DateTime::Duration> obje
 use strict;
 use warnings;
 
-our $VERSION = '0.01001';
+our $VERSION = '0.01002';
 
 use base qw(DBIx::Class);
 

@@ -14,7 +14,7 @@ BEGIN {
         plan tests => 27;
     };
 
-    use_ok('URI');
+    use_ok('DateTime::Duration');
 };
 
 
